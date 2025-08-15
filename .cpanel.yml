@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/binukqms/scores.binusu.site
+    - /bin/cp -r * $DEPLOYPATH
