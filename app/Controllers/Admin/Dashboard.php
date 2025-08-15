@@ -1000,9 +1000,10 @@ class Dashboard extends BaseController
                                       ->countAllResults();
         if ($recentUsers > 0) {
             $activity[] = [
-                'date' => date('Y-m-d'),
-                'activity' => 'New User Registrations',
-                'count' => $recentUsers
+                'type' => 'User Registration',
+                'user_name' => 'System',
+                'description' => "$recentUsers new users registered in the last 7 days",
+                'created_at' => date('Y-m-d H:i:s')
             ];
         }
 
@@ -1011,9 +1012,10 @@ class Dashboard extends BaseController
                                                    ->countAllResults();
         if ($recentPredictions > 0) {
             $activity[] = [
-                'date' => date('Y-m-d'),
-                'activity' => 'New Predictions',
-                'count' => $recentPredictions
+                'type' => 'Prediction',
+                'user_name' => 'System',
+                'description' => "$recentPredictions new predictions made in the last 7 days",
+                'created_at' => date('Y-m-d H:i:s')
             ];
         }
 
@@ -1022,12 +1024,34 @@ class Dashboard extends BaseController
                                             ->countAllResults();
         if ($recentPayments > 0) {
             $activity[] = [
-                'date' => date('Y-m-d'),
-                'activity' => 'New Payments',
-                'count' => $recentPayments
+                'type' => 'Payment',
+                'user_name' => 'System',
+                'description' => "$recentPayments new payments processed in the last 7 days",
+                'created_at' => date('Y-m-d H:i:s')
             ];
         }
 
-        return $activity;
+        // Add some individual recent activities for more detail
+        $recentUserRegistrations = $this->userModel->select('users.full_name, users.created_at')
+                                                  ->where('users.created_at >=', date('Y-m-d', strtotime('-3 days')))
+                                                  ->orderBy('users.created_at', 'DESC')
+                                                  ->limit(3)
+                                                  ->findAll();
+        
+        foreach ($recentUserRegistrations as $user) {
+            $activity[] = [
+                'type' => 'User Registration',
+                'user_name' => $user['full_name'],
+                'description' => 'New user registered',
+                'created_at' => $user['created_at']
+            ];
+        }
+
+        // Sort by created_at descending to show most recent first
+        usort($activity, function($a, $b) {
+            return strtotime($b['created_at']) - strtotime($a['created_at']);
+        });
+
+        return array_slice($activity, 0, 10); // Return only the 10 most recent activities
     }
 } 

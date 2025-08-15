@@ -164,15 +164,15 @@
                     <?php foreach ($recentActivity as $activity): ?>
                         <tr>
                             <td>
-                                <span class="badge badge-primary"><?= esc($activity['type']) ?></span>
+                                <span class="badge badge-primary"><?= esc($activity['type'] ?? 'Unknown') ?></span>
                             </td>
                             <td>
                                 <strong><?= esc($activity['user_name'] ?? 'System') ?></strong>
                             </td>
-                            <td><?= esc($activity['description']) ?></td>
+                            <td><?= esc($activity['description'] ?? 'No description available') ?></td>
                             <td>
                                 <small class="text-muted">
-                                    <?= date('M j, Y g:i A', strtotime($activity['created_at'])) ?>
+                                    <?= isset($activity['created_at']) ? date('M j, Y g:i A', strtotime($activity['created_at'])) : 'N/A' ?>
                                 </small>
                             </td>
                         </tr>
