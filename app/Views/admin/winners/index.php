@@ -102,7 +102,7 @@
     <div class="card-header">
         <h3 class="card-title">
             <i class="fas fa-trophy"></i>
-            Won Stacks (<?= count($wonStacks) ?>)
+            Won Stacks (<?= count($wonStacks ?? []) ?>)
         </h3>
     </div>
     
@@ -119,10 +119,15 @@
                 </tr>
             </thead>
             <tbody>
+                <?php if (!empty($wonStacks)): ?>
                 <?php foreach ($wonStacks as $winner): ?>
                 <tr>
                     <td>
                         <strong><?= esc($winner['stack_title'] ?? 'Unknown Stack') ?></strong>
+                        <br>
+                        <span class="badge badge-<?= $winner['win_type'] === 'full-correct' ? 'warning' : 'info' ?>">
+                            <?= $winner['win_type'] === 'full-correct' ? 'Perfect Score' : 'Top Score' ?>
+                        </span>
                     </td>
                     <td>
                         <div class="d-flex align-items-center gap-2">
@@ -137,6 +142,9 @@
                     </td>
                     <td>
                         <span class="badge badge-success"><?= number_format($winner['score'] ?? 0) ?> points</span>
+                        <br><small class="text-muted">
+                            <?= $winner['exact_count'] ?? 0 ?> exact, <?= $winner['correct_count'] ?? 0 ?> outcome
+                        </small>
                     </td>
                     <td>
                         <span class="badge badge-primary"><?= number_format($winner['prize_amount'] ?? 0, 0) ?> UGX</span>
@@ -156,6 +164,16 @@
                     </td>
                 </tr>
                 <?php endforeach; ?>
+                <?php else: ?>
+                <tr>
+                    <td colspan="6" class="text-center py-4">
+                        <div class="text-muted">
+                            <i class="fas fa-trophy" style="font-size: 2rem; opacity: 0.3;"></i>
+                            <p class="mt-2 mb-0">No winners found yet.</p>
+                        </div>
+                    </td>
+                </tr>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
@@ -207,7 +225,11 @@ function viewWinner(winnerId) {
                                 </tr>
                                 <tr>
                                     <td><strong>Score:</strong></td>
-                                    <td><span class="badge badge-success">${Number(winner.score || 0).toLocaleString()} points</span></td>
+                                    <td><span class="badge badge-success">${Number(winner.total_points || 0).toLocaleString()} points</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Predictions:</strong></td>
+                                    <td>${winner.exact_count || 0} exact, ${winner.correct_count || 0} outcome, ${winner.wrong_count || 0} wrong</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Prize Amount:</strong></td>
@@ -221,6 +243,10 @@ function viewWinner(winnerId) {
                                 <tr>
                                     <td><strong>Stack Title:</strong></td>
                                     <td>${winner.stack_title || 'Unknown'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Win Type:</strong></td>
+                                    <td><span class="badge badge-${winner.win_type === 'full-correct' ? 'warning' : 'info'}">${winner.win_type === 'full-correct' ? 'Perfect Score' : 'Top Score'}</span></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Won Date:</strong></td>

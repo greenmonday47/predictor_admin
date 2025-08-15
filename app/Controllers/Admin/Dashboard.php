@@ -613,12 +613,250 @@ class Dashboard extends BaseController
 
     public function winners()
     {
+        // Get all winners with details
+        $winners = $this->winnerModel->getAllWinnersWithDetails();
+        
+        // Query database for accurate statistics
+        $totalWinners = $this->winnerModel->countAll();
+        
+        // Count perfect winners (full-correct)
+        $perfectWinners = $this->winnerModel->where('win_type', 'full-correct')->countAllResults();
+        
+        // Count top score winners (top-score)
+        $topScorers = $this->winnerModel->where('win_type', 'top-score')->countAllResults();
+        
+        // Count winners from current month
+        $currentMonth = date('Y-m');
+        $thisMonthWinners = $this->winnerModel->where('DATE_FORMAT(awarded_at, "%Y-%m")', $currentMonth)->countAllResults();
+        
+        // Prepare won stacks data with actual scores from scores table
+        $wonStacks = [];
+        foreach ($winners as $winner) {
+            $stackId = $winner['stack_id'];
+            $userId = $winner['user_id'];
+            
+            // Get actual score from scores table
+            $userScore = $this->scoreModel->where('user_id', $userId)
+                                        ->where('stack_id', $stackId)
+                                        ->first();
+            
+            // Get participant count for this stack
+            $participantCount = $this->predictionModel->where('stack_id', $stackId)->countAllResults();
+            
+            if (!isset($wonStacks[$stackId])) {
+                $wonStacks[$stackId] = [
+                    'id' => $stackId,
+                    'stack_title' => $winner['title'] ?? 'Unknown Stack',
+                    'winner_name' => $winner['full_name'] ?? 'Unknown',
+                    'winner_phone' => $winner['phone'] ?? 'N/A',
+                    'score' => $userScore ? $userScore['total_points'] : 0,
+                    'prize_amount' => $winner['entry_fee'] ?? 0,
+                    'won_at' => $winner['awarded_at'] ?? date('Y-m-d H:i:s'),
+                    'created_at' => $winner['awarded_at'] ?? date('Y-m-d H:i:s'),
+                    'total_participants' => $participantCount,
+                    'win_type' => $winner['win_type'],
+                    'exact_count' => $userScore ? ($userScore['exact_count'] ?? 0) : 0,
+                    'correct_count' => $userScore ? ($userScore['outcome_count'] ?? 0) : 0,
+                    'wrong_count' => $userScore ? ($userScore['wrong_count'] ?? 0) : 0
+                ];
+            }
+        }
+        
         $data = [
             'title' => 'Winners',
-            'winners' => $this->winnerModel->getAllWinnersWithDetails()
+            'winners' => $winners,
+            'wonStacks' => array_values($wonStacks),
+            'totalWinners' => $totalWinners,
+            'perfectWinners' => $perfectWinners,
+            'topScorers' => $topScorers,
+            'thisMonthWinners' => $thisMonthWinners
         ];
 
         return view('admin/winners/index', $data);
+    }
+
+    public function getWinnerDetails($winnerId)
+    {
+        try {
+            $winner = $this->winnerModel->find($winnerId);
+            
+            if (!$winner) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Winner not found'
+                ]);
+            }
+            
+            // Get additional details with score information
+            $winnerDetails = $this->winnerModel->select('winners.*, users.full_name, users.phone, stacks.title, stacks.entry_fee')
+                                             ->join('users', 'users.id = winners.user_id')
+                                             ->join('stacks', 'stacks.id = winners.stack_id')
+                                             ->where('winners.id', $winnerId)
+                                             ->first();
+            
+            // Get score details from scores table
+            $scoreDetails = $this->scoreModel->where('user_id', $winner['user_id'])
+                                           ->where('stack_id', $winner['stack_id'])
+                                           ->first();
+            
+            // Get participant count for this stack
+            $participantCount = $this->predictionModel->where('stack_id', $winner['stack_id'])->countAllResults();
+            
+            // Merge score details with winner details
+            if ($scoreDetails) {
+                $winnerDetails['total_points'] = $scoreDetails['total_points'] ?? 0;
+                $winnerDetails['exact_count'] = $scoreDetails['exact_count'] ?? 0;
+                $winnerDetails['correct_count'] = $scoreDetails['outcome_count'] ?? 0;
+                $winnerDetails['wrong_count'] = $scoreDetails['wrong_count'] ?? 0;
+            } else {
+                $winnerDetails['total_points'] = 0;
+                $winnerDetails['exact_count'] = 0;
+                $winnerDetails['correct_count'] = 0;
+                $winnerDetails['wrong_count'] = 0;
+            }
+            
+            $winnerDetails['total_participants'] = $participantCount;
+            
+            return $this->response->setJSON([
+                'success' => true,
+                'winner' => $winnerDetails
+            ]);
+            
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Error loading winner details'
+            ]);
+        }
+    }
+
+    public function getUserDetails($userId)
+    {
+        try {
+            $user = $this->userModel->find($userId);
+            
+            if (!$user) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'User not found'
+                ]);
+            }
+            
+            // Get user statistics
+            $totalPredictions = $this->predictionModel->where('user_id', $userId)->countAllResults();
+            $totalStacks = $this->predictionModel->where('user_id', $userId)->distinct()->countAllResults('stack_id');
+            $totalWins = $this->winnerModel->where('user_id', $userId)->countAllResults();
+            $totalPoints = $this->scoreModel->where('user_id', $userId)->selectSum('total_points')->first()['total_points'] ?? 0;
+            
+            // Get recent activity
+            $recentPredictions = $this->predictionModel->where('user_id', $userId)
+                                                      ->orderBy('created_at', 'DESC')
+                                                      ->limit(5)
+                                                      ->findAll();
+            
+            // Get performance stats
+            $perfectScores = $this->scoreModel->where('user_id', $userId)
+                                             ->where('exact_count >', 0)
+                                             ->countAllResults();
+            
+            $stats = [
+                'total_predictions' => $totalPredictions,
+                'total_stacks' => $totalStacks,
+                'total_wins' => $totalWins,
+                'total_points' => $totalPoints,
+                'perfect_scores' => $perfectScores,
+                'recent_predictions' => $recentPredictions
+            ];
+            
+            return $this->response->setJSON([
+                'success' => true,
+                'user' => $user,
+                'stats' => $stats
+            ]);
+            
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Error loading user details'
+            ]);
+        }
+    }
+
+    public function getUserPredictions($userId)
+    {
+        try {
+            $user = $this->userModel->find($userId);
+            
+            if (!$user) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'User not found'
+                ]);
+            }
+            
+            // Get all predictions with stack details, grouped by stack
+            $predictions = $this->predictionModel->select('
+                predictions.*, 
+                stacks.title as stack_title,
+                stacks.entry_fee,
+                stacks.deadline,
+                stacks.status as stack_status,
+                scores.total_points,
+                scores.exact_count,
+                scores.outcome_count,
+                scores.wrong_count
+            ')
+            ->join('stacks', 'stacks.id = predictions.stack_id')
+            ->join('scores', 'scores.user_id = predictions.user_id AND scores.stack_id = predictions.stack_id', 'left')
+            ->where('predictions.user_id', $userId)
+            ->orderBy('stacks.title', 'ASC')
+            ->orderBy('predictions.created_at', 'DESC')
+            ->findAll();
+            
+            // Group predictions by stack
+            $groupedPredictions = [];
+            foreach ($predictions as $prediction) {
+                $stackId = $prediction['stack_id'];
+                if (!isset($groupedPredictions[$stackId])) {
+                    $groupedPredictions[$stackId] = [
+                        'stack_info' => [
+                            'title' => $prediction['stack_title'],
+                            'entry_fee' => $prediction['entry_fee'],
+                            'deadline' => $prediction['deadline'],
+                            'status' => $prediction['stack_status']
+                        ],
+                        'predictions' => []
+                    ];
+                }
+                
+                // Parse predictions JSON to get individual match predictions
+                $matchPredictions = json_decode($prediction['predictions_json'], true);
+                $actualScores = json_decode($prediction['actual_scores_json'] ?? '{}', true);
+                
+                $groupedPredictions[$stackId]['predictions'][] = [
+                    'id' => $prediction['id'],
+                    'created_at' => $prediction['created_at'],
+                    'match_predictions' => $matchPredictions,
+                    'actual_scores' => $actualScores,
+                    'total_points' => $prediction['total_points'] ?? 0,
+                    'exact_count' => $prediction['exact_count'] ?? 0,
+                    'outcome_count' => $prediction['outcome_count'] ?? 0,
+                    'wrong_count' => $prediction['wrong_count'] ?? 0
+                ];
+            }
+            
+            return $this->response->setJSON([
+                'success' => true,
+                'user' => $user,
+                'predictions' => $groupedPredictions
+            ]);
+            
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Error loading user predictions'
+            ]);
+        }
     }
 
     public function serveImage($path)

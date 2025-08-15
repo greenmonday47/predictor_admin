@@ -28,6 +28,9 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function($rout
     $routes->GET('topup-transactions', 'Dashboard::topupTransactions');
     $routes->GET('reports', 'Dashboard::reports');
     $routes->GET('winners', 'Dashboard::winners');
+    $routes->GET('winners/(:num)', 'Dashboard::getWinnerDetails/$1');
+    $routes->GET('users/(:num)', 'Dashboard::getUserDetails/$1');
+    $routes->GET('users/(:num)/predictions', 'Dashboard::getUserPredictions/$1');
     $routes->GET('uploads/(:any)', 'Dashboard::serveImage/$1');
 });
 
