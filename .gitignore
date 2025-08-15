@@ -1,0 +1,51 @@
+# CodeIgniter 4 specific ignores
+writable/cache/
+writable/logs/
+writable/session/
+writable/uploads/
+writable/debugbar/
+
+# Environment files
+.env
+env
+env_sample.txt
+
+# Composer
+vendor/
+composer.lock
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Flutter app folder
+predictor_app/
+
+# Test files
+test_*.php
+simple_seeder.php
+seed_test_data.php
+run_seeder.ps1
+run_seeder.bat
+
+# Documentation files (optional - uncomment if you want to ignore them)
+# *.md
+# *.json
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.zip

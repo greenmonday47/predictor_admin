@@ -1,0 +1,121 @@
+{
+    "project": "Score Predictor App Backend (CodeIgniter 4)",
+    "description": "This JSON outlines the required database schemas, controllers, models, and views for a score prediction app backend using CodeIgniter 4.",
+    "database_schemas": {
+        "users": {
+            "description": "Stores user information including PIN (hashed)",
+            "fields": {
+                "id": "INT AUTO_INCREMENT PRIMARY KEY",
+                "full_name": "VARCHAR(100) NOT NULL",
+                "phone": "VARCHAR(15) UNIQUE NOT NULL",
+                "pin": "VARCHAR(255) NOT NULL",
+                "created_at": "DATETIME DEFAULT CURRENT_TIMESTAMP"
+            }
+        },
+        "stacks": {
+            "description": "Each stack contains a prize and a JSON list of matches.",
+            "fields": {
+                "id": "INT AUTO_INCREMENT PRIMARY KEY",
+                "title": "VARCHAR(255) NOT NULL",
+                "prize_description": "TEXT",
+                "entry_fee": "DECIMAL(10,2) NOT NULL DEFAULT 0.00",
+                "matches_json": "JSON NOT NULL",
+                "actual_scores_json": "JSON DEFAULT NULL",
+                "deadline": "DATETIME NOT NULL",
+                "is_active": "BOOLEAN DEFAULT TRUE",
+                "created_at": "DATETIME DEFAULT CURRENT_TIMESTAMP"
+            }
+        },
+        "payments": {
+            "description": "Tracks user payments for unlocking stacks",
+            "fields": {
+                "id": "INT AUTO_INCREMENT PRIMARY KEY",
+                "user_id": "INT NOT NULL",
+                "stack_id": "INT NOT NULL",
+                "amount": "DECIMAL(10,2) NOT NULL",
+                "transaction_id": "VARCHAR(100) UNIQUE NOT NULL",
+                "status": "ENUM('pending', 'success', 'failed') DEFAULT 'pending'",
+                "paid_at": "DATETIME DEFAULT CURRENT_TIMESTAMP"
+            }
+        },
+        "predictions": {
+            "description": "User predictions per stack using JSON format",
+            "fields": {
+                "id": "INT AUTO_INCREMENT PRIMARY KEY",
+                "user_id": "INT NOT NULL",
+                "stack_id": "INT NOT NULL",
+                "predictions_json": "JSON NOT NULL",
+                "created_at": "DATETIME DEFAULT CURRENT_TIMESTAMP"
+            }
+        },
+        "scores": {
+            "description": "Tracks prediction results and points per user per stack",
+            "fields": {
+                "id": "INT AUTO_INCREMENT PRIMARY KEY",
+                "user_id": "INT NOT NULL",
+                "stack_id": "INT NOT NULL",
+                "exact_count": "INT DEFAULT 0",
+                "outcome_count": "INT DEFAULT 0",
+                "wrong_count": "INT DEFAULT 0",
+                "total_points": "INT DEFAULT 0"
+            }
+        },
+        "winners": {
+            "description": "Users who fully predicted correctly or were top scorers",
+            "fields": {
+                "id": "INT AUTO_INCREMENT PRIMARY KEY",
+                "user_id": "INT NOT NULL",
+                "stack_id": "INT NOT NULL",
+                "win_type": "ENUM('full-correct', 'top-score') DEFAULT 'full-correct'",
+                "awarded_at": "DATETIME DEFAULT CURRENT_TIMESTAMP"
+            }
+        }
+    },
+    "models": [
+        "UserModel",
+        "StackModel",
+        "PredictionModel",
+        "ScoreModel",
+        "PaymentModel",
+        "WinnerModel"
+    ],
+    "controllers": [
+        {
+            "AuthController": {
+                "methods": [
+                    "register",
+                    "login"
+                ]
+            }
+        },
+        {
+            "StackController": {
+                "methods": [
+                    "index",
+                    "show"
+                ]
+            }
+        },
+        {
+            "PredictionController": {
+                "methods": [
+                    "submit"
+                ]
+            }
+        }
+    ],
+    "views": {
+        "note": "Since this is primarily an API-driven backend for Flutter, views are not required unless creating a web dashboard.",
+        "admin_views_optional": [
+            "stacks_list.php",
+            "create_stack.php",
+            "users_list.php",
+            "winners_list.php"
+        ]
+    },
+    "notes": [
+        "JSON is used to store match and prediction data inside stacks and predictions tables.",
+        "Payment must be confirmed before prediction submission.",
+        "Scoring logic and leaderboard will be handled in a ScoreController (optional next step)."
+    ]
+}

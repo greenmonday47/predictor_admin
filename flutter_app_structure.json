@@ -1,0 +1,99 @@
+{
+    "project": "Score Predictor App (Flutter Frontend)",
+    "description": "Flutter mobile app that allows users to register, login, pay to unlock match stacks, submit score predictions, and view results.",
+    "screens": {
+        "Onboarding": {
+            "RegisterScreen": {
+                "fields": [
+                    "Full Name",
+                    "Phone Number",
+                    "PIN"
+                ],
+                "action": "POST /api/register"
+            },
+            "LoginScreen": {
+                "fields": [
+                    "Phone Number",
+                    "PIN"
+                ],
+                "action": "POST /api/login"
+            }
+        },
+        "HomeScreen": {
+            "description": "Shows all active stacks with prizes",
+            "data_source": "GET /api/stacks",
+            "fields_displayed": [
+                "Title",
+                "Prize",
+                "Deadline",
+                "Entry Fee"
+            ],
+            "actions": [
+                "Pay to Enter",
+                "View Matches",
+                "Submit Predictions"
+            ]
+        },
+        "PredictionScreen": {
+            "description": "Allows user to input predictions for each match in a stack",
+            "fields": [
+                "Predicted Home Score",
+                "Predicted Away Score"
+            ],
+            "submit_action": "POST /api/predictions",
+            "note": "Only available if payment for the stack is completed"
+        },
+        "LeaderboardScreen": {
+            "description": "Displays ranked users by total points",
+            "data_source": "GET /api/leaderboard"
+        },
+        "WinnersScreen": {
+            "description": "Shows winners per stack",
+            "data_source": "GET /api/winners"
+        },
+        "ProfileScreen": {
+            "description": "View performance metrics and update full name",
+            "fields": [
+                "Full Name (editable)",
+                "Phone (locked)",
+                "Total Plays",
+                "Exact",
+                "Outcome",
+                "Wrong",
+                "Accuracy %"
+            ],
+            "update_action": "PUT /api/user/update-profile"
+        }
+    },
+    "state_management": "Recommended: Provider, Riverpod or Bloc",
+    "networking": {
+        "library": "Dio or http",
+        "authentication": "Store user_id and phone locally using SharedPreferences or SecureStorage"
+    },
+    "local_storage": {
+        "preferences": [
+            "phone",
+            "user_id",
+            "full_name",
+            "auth_token_if_applicable"
+        ]
+    },
+    "security": {
+        "PIN handling": "Hash or encrypt PIN before sending if required",
+        "Phone update": "Disallowed, must stay immutable"
+    },
+    "payment_integration": {
+        "action": "POST /api/pay",
+        "fields": [
+            "user_id",
+            "stack_id",
+            "amount"
+        ],
+        "expected": "Trigger external payment API, await callback"
+    },
+    "future_extensions": [
+        "Push notifications for match results",
+        "In-app prize claim workflow",
+        "Referral system"
+    ]
+}
