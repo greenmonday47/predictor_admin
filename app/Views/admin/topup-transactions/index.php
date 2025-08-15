@@ -1,126 +1,131 @@
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
-<div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Manage Top-Up Transactions</h1>
-        <a href="<?= base_url('admin') ?>" class="btn btn-secondary btn-sm">
-            <i class="fas fa-arrow-left"></i> Back to Dashboard
+
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="card-title mb-2">
+            <i class="fas fa-wallet"></i>
+            Manage Top-Up Transactions
+        </h1>
+        <p class="text-muted mb-0">View and manage all wallet top-up transactions</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="<?= base_url('admin') ?>" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Dashboard</span>
         </a>
     </div>
+</div>
 
-    <?php if (session()->getFlashdata('success')): ?>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <?= session()->getFlashdata('success') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    <?php endif; ?>
-
-    <?php if (session()->getFlashdata('error')): ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <?= session()->getFlashdata('error') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    <?php endif; ?>
-
-    <!-- Top-Up Transaction Statistics -->
-    <div class="row mb-4">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total Transactions</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $totalTransactions ?></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Successful Top-Ups</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $successfulTransactions ?></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-money-bill-wave fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Pending Top-Ups</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $pendingTransactions ?></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clock fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                Failed Top-Ups</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $failedTransactions ?></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-times-circle fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- Flash Messages -->
+<?php if (session()->getFlashdata('success')): ?>
+    <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i>
+        <?= session()->getFlashdata('success') ?>
     </div>
+<?php endif; ?>
 
-    <!-- Total Amount Card -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Total Amount Credited</div>
-                            <div class="h3 mb-0 font-weight-bold text-gray-800">UGX <?= number_format($totalAmount, 0) ?></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-wallet fa-3x text-gray-300"></i>
-                        </div>
-                    </div>
+<?php if (session()->getFlashdata('error')): ?>
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i>
+        <?= session()->getFlashdata('error') ?>
+    </div>
+<?php endif; ?>
+
+<!-- Overview Statistics -->
+<div class="grid grid-4 mb-4">
+    <div class="card p-0" style="background: var(--primary-gradient); color: var(--text-white); overflow: hidden;">
+        <div class="p-3">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <p class="mb-1" style="opacity: 0.9; font-size: 0.9rem; font-weight: 500;">Total Transactions</p>
+                    <h3 class="mb-0" style="font-size: 2.2rem; font-weight: 700;"><?= number_format($totalTransactions ?? 0) ?></h3>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 12px;">
+                    <i class="fas fa-calendar" style="font-size: 1.5rem;"></i>
                 </div>
             </div>
         </div>
+        <div style="height: 4px; background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));"></div>
     </div>
-
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">All Top-Up Transactions (<?= count($transactions) ?>)</h6>
+    
+    <div class="card p-0" style="background: var(--success-gradient); color: var(--text-white); overflow: hidden;">
+        <div class="p-3">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <p class="mb-1" style="opacity: 0.9; font-size: 0.9rem; font-weight: 500;">Successful Top-Ups</p>
+                    <h3 class="mb-0" style="font-size: 2.2rem; font-weight: 700;"><?= number_format($successfulTransactions ?? 0) ?></h3>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 12px;">
+                    <i class="fas fa-money-bill-wave" style="font-size: 1.5rem;"></i>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="topupTransactionsTable" width="100%" cellspacing="0">
+        <div style="height: 4px; background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));"></div>
+    </div>
+    
+    <div class="card p-0" style="background: var(--warning-gradient); color: var(--text-white); overflow: hidden;">
+        <div class="p-3">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <p class="mb-1" style="opacity: 0.9; font-size: 0.9rem; font-weight: 500;">Pending Top-Ups</p>
+                    <h3 class="mb-0" style="font-size: 2.2rem; font-weight: 700;"><?= number_format($pendingTransactions ?? 0) ?></h3>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 12px;">
+                    <i class="fas fa-clock" style="font-size: 1.5rem;"></i>
+                </div>
+            </div>
+        </div>
+        <div style="height: 4px; background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));"></div>
+    </div>
+    
+    <div class="card p-0" style="background: var(--danger-gradient); color: var(--text-white); overflow: hidden;">
+        <div class="p-3">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <p class="mb-1" style="opacity: 0.9; font-size: 0.9rem; font-weight: 500;">Failed Top-Ups</p>
+                    <h3 class="mb-0" style="font-size: 2.2rem; font-weight: 700;"><?= number_format($failedTransactions ?? 0) ?></h3>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 12px;">
+                    <i class="fas fa-times-circle" style="font-size: 1.5rem;"></i>
+                </div>
+            </div>
+        </div>
+        <div style="height: 4px; background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));"></div>
+    </div>
+</div>
+
+<!-- Total Amount Card -->
+<div class="grid grid-1 mb-4">
+    <div class="card p-0" style="background: var(--info-gradient); color: var(--text-white); overflow: hidden;">
+        <div class="p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="mb-1" style="opacity: 0.9; font-size: 0.9rem; font-weight: 500;">Total Amount Credited</p>
+                    <h3 class="mb-0" style="font-size: 2.5rem; font-weight: 700;">UGX <?= number_format($totalAmount ?? 0, 0) ?></h3>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 16px; border-radius: 16px;">
+                    <i class="fas fa-wallet" style="font-size: 2rem;"></i>
+                </div>
+            </div>
+        </div>
+        <div style="height: 4px; background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));"></div>
+    </div>
+</div>
+
+    <!-- Transactions Table -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-list"></i>
+                All Top-Up Transactions (<?= count($transactions) ?>)
+            </h3>
+        </div>
+        
+        <div class="table-container">
+            <table class="table data-table" id="topupTransactionsTable">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -244,10 +249,25 @@
 
 <script>
 $(document).ready(function() {
+    // Destroy existing DataTable if it exists
+    if ($.fn.DataTable.isDataTable('#topupTransactionsTable')) {
+        $('#topupTransactionsTable').DataTable().destroy();
+    }
+    
+    // Initialize DataTable
     $('#topupTransactionsTable').DataTable({
         order: [[0, 'desc']],
         pageLength: 25,
-        responsive: true
+        responsive: true,
+        language: {
+            search: "Search transactions:",
+            lengthMenu: "Show _MENU_ transactions per page",
+            info: "Showing _START_ to _END_ of _TOTAL_ transactions",
+            infoEmpty: "Showing 0 to 0 of 0 transactions",
+            infoFiltered: "(filtered from _MAX_ total transactions)",
+            emptyTable: "No transactions found",
+            zeroRecords: "No matching transactions found"
+        }
     });
 });
 
