@@ -11,25 +11,66 @@
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --success-gradient: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            --warning-gradient: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
-            --danger-gradient: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
-            --info-gradient: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);
-            --surface: rgba(255, 255, 255, 0.95);
-            --glass: rgba(255, 255, 255, 0.1);
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
-            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
-            --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.2);
-            --border-radius: 16px;
-            --border-radius-sm: 8px;
-            --border-radius-lg: 24px;
-            --text-primary: #2d3748;
-            --text-secondary: #718096;
-            --text-muted: #a0aec0;
-            --border-color: #e2e8f0;
+            /* Enhanced Color Palette with Better Contrast */
+            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --primary-light: #6366f1;
+            --primary-dark: #3730a3;
+            
+            --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            --success-light: #34d399;
+            --success-dark: #047857;
+            
+            --warning-gradient: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            --warning-light: #fbbf24;
+            --warning-dark: #b45309;
+            
+            --danger-gradient: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            --danger-light: #f87171;
+            --danger-dark: #b91c1c;
+            
+            --info-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+            --info-light: #22d3ee;
+            --info-dark: #0e7490;
+            
+            --secondary-gradient: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%);
+            --secondary-light: #d1d5db;
+            --secondary-dark: #4b5563;
+            
+            /* Surface Colors with Better Contrast */
+            --surface: rgba(255, 255, 255, 0.98);
+            --surface-secondary: rgba(249, 250, 251, 0.95);
+            --surface-tertiary: rgba(243, 244, 246, 0.9);
+            --glass: rgba(255, 255, 255, 0.15);
+            --glass-dark: rgba(0, 0, 0, 0.1);
+            
+            /* Text Colors with Better Contrast */
+            --text-primary: #111827;
+            --text-secondary: #374151;
+            --text-muted: #6b7280;
+            --text-light: #9ca3af;
+            --text-white: #ffffff;
+            --text-dark: #1f2937;
+            
+            /* Border Colors */
+            --border-color: #e5e7eb;
+            --border-light: #f3f4f6;
+            --border-dark: #d1d5db;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
+            
+            /* Border Radius */
+            --border-radius: 12px;
+            --border-radius-sm: 6px;
+            --border-radius-lg: 16px;
+            --border-radius-xl: 20px;
+            
+            /* Transitions */
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -76,7 +117,7 @@
             background: var(--surface);
             backdrop-filter: blur(20px);
             box-shadow: var(--shadow-sm);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid var(--border-color);
             padding: 0;
             position: sticky;
             top: 0;
@@ -131,7 +172,7 @@
             gap: 8px;
             padding: 12px 16px;
             text-decoration: none;
-            color: var(--text-primary);
+            color: var(--text-secondary);
             font-weight: 500;
             font-size: 0.95rem;
             border-radius: var(--border-radius-sm);
@@ -160,7 +201,7 @@
 
         .nav-links a:hover,
         .nav-links a.active {
-            color: #667eea;
+            color: var(--primary-dark);
             transform: translateY(-1px);
         }
 
@@ -174,7 +215,7 @@
             background: none;
             border: none;
             font-size: 1.5rem;
-            color: var(--text-primary);
+            color: var(--text-secondary);
             cursor: pointer;
             padding: 8px;
             border-radius: var(--border-radius-sm);
@@ -182,7 +223,7 @@
         }
 
         .menu-toggle:hover {
-            background: rgba(102, 126, 234, 0.1);
+            background: rgba(79, 70, 229, 0.1);
         }
 
         .main-content {
@@ -194,7 +235,7 @@
         .card {
             background: var(--surface);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border-color);
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-md);
             padding: 32px;
@@ -286,48 +327,136 @@
 
         .btn-primary {
             background: var(--primary-gradient);
-            color: white;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            color: var(--text-white);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.4);
+            color: var(--text-white);
         }
 
         .btn-success {
             background: var(--success-gradient);
-            color: white;
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            color: var(--text-white);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
         }
 
         .btn-success:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(40, 167, 69, 0.4);
+            box-shadow: 0 8px 24px rgba(5, 150, 105, 0.4);
+            color: var(--text-white);
         }
 
         .btn-warning {
             background: var(--warning-gradient);
-            color: white;
-            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+            color: var(--text-white);
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(217, 119, 6, 0.4);
+            color: var(--text-white);
         }
 
         .btn-danger {
             background: var(--danger-gradient);
-            color: white;
-            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            color: var(--text-white);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(220, 38, 38, 0.4);
+            color: var(--text-white);
+        }
+
+        .btn-info {
+            background: var(--info-gradient);
+            color: var(--text-white);
+            box-shadow: 0 4px 12px rgba(8, 145, 178, 0.3);
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(8, 145, 178, 0.4);
+            color: var(--text-white);
         }
 
         .btn-secondary {
-            background: rgba(248, 249, 250, 0.8);
-            color: var(--text-primary);
+            background: var(--surface-secondary);
+            color: var(--text-secondary);
             border: 1px solid var(--border-color);
             backdrop-filter: blur(10px);
         }
 
         .btn-secondary:hover {
-            background: rgba(233, 236, 239, 0.9);
+            background: var(--surface-tertiary);
             transform: translateY(-1px);
+            color: var(--text-primary);
+        }
+
+        /* Outline Button Variants */
+        .btn-outline-primary {
+            background: transparent;
+            color: var(--primary-dark);
+            border: 2px solid var(--primary-light);
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-gradient);
+            color: var(--text-white);
+            border-color: transparent;
+        }
+
+        .btn-outline-success {
+            background: transparent;
+            color: var(--success-dark);
+            border: 2px solid var(--success-light);
+        }
+
+        .btn-outline-success:hover {
+            background: var(--success-gradient);
+            color: var(--text-white);
+            border-color: transparent;
+        }
+
+        .btn-outline-warning {
+            background: transparent;
+            color: var(--warning-dark);
+            border: 2px solid var(--warning-light);
+        }
+
+        .btn-outline-warning:hover {
+            background: var(--warning-gradient);
+            color: var(--text-white);
+            border-color: transparent;
+        }
+
+        .btn-outline-danger {
+            background: transparent;
+            color: var(--danger-dark);
+            border: 2px solid var(--danger-light);
+        }
+
+        .btn-outline-danger:hover {
+            background: var(--danger-gradient);
+            color: var(--text-white);
+            border-color: transparent;
+        }
+
+        .btn-outline-info {
+            background: transparent;
+            color: var(--info-dark);
+            border: 2px solid var(--info-light);
+        }
+
+        .btn-outline-info:hover {
+            background: var(--info-gradient);
+            color: var(--text-white);
+            border-color: transparent;
         }
 
         .btn-sm {
@@ -361,15 +490,19 @@
             font-size: 0.95rem;
             font-family: inherit;
             transition: var(--transition);
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
+            background: var(--surface);
+            color: var(--text-primary);
         }
 
         .form-control:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-            background: rgba(255, 255, 255, 0.95);
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            background: var(--surface);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
         }
 
         /* Alert Styles */
@@ -386,27 +519,27 @@
         }
 
         .alert-success {
-            background: rgba(212, 237, 218, 0.9);
-            color: #155724;
-            border-left-color: #28a745;
+            background: rgba(209, 250, 229, 0.95);
+            color: var(--success-dark);
+            border-left-color: var(--success-dark);
         }
 
         .alert-danger {
-            background: rgba(248, 215, 218, 0.9);
-            color: #721c24;
-            border-left-color: #dc3545;
+            background: rgba(254, 226, 226, 0.95);
+            color: var(--danger-dark);
+            border-left-color: var(--danger-dark);
         }
 
         .alert-info {
-            background: rgba(209, 236, 241, 0.9);
-            color: #0c5460;
-            border-left-color: #17a2b8;
+            background: rgba(207, 250, 254, 0.95);
+            color: var(--info-dark);
+            border-left-color: var(--info-dark);
         }
 
         .alert-warning {
-            background: rgba(255, 243, 205, 0.9);
-            color: #856404;
-            border-left-color: #ffc107;
+            background: rgba(254, 243, 199, 0.95);
+            color: var(--warning-dark);
+            border-left-color: var(--warning-dark);
         }
 
         /* Table Styles */
@@ -415,7 +548,7 @@
             border-radius: var(--border-radius);
             overflow: hidden;
             box-shadow: var(--shadow-sm);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border-color);
         }
 
         .table {
@@ -429,11 +562,11 @@
         .table td {
             padding: 16px 20px;
             text-align: left;
-            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+            border-bottom: 1px solid var(--border-light);
         }
 
         .table th {
-            background: rgba(248, 249, 250, 0.8);
+            background: var(--surface-secondary);
             font-weight: 600;
             font-size: 0.9rem;
             color: var(--text-secondary);
@@ -446,7 +579,7 @@
         }
 
         .table tbody tr:hover {
-            background: rgba(102, 126, 234, 0.05);
+            background: rgba(79, 70, 229, 0.05);
         }
 
         /* Badge Styles */
@@ -462,29 +595,56 @@
         }
 
         .badge-success {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
+            background: var(--success-gradient);
+            color: var(--text-white);
         }
 
         .badge-warning {
-            background: linear-gradient(135deg, #ffc107, #fd7e14);
-            color: #212529;
+            background: var(--warning-gradient);
+            color: var(--text-white);
         }
 
         .badge-danger {
-            background: linear-gradient(135deg, #dc3545, #e83e8c);
-            color: white;
+            background: var(--danger-gradient);
+            color: var(--text-white);
         }
 
         .badge-info {
-            background: linear-gradient(135deg, #17a2b8, #6f42c1);
-            color: white;
+            background: var(--info-gradient);
+            color: var(--text-white);
+        }
+
+        .badge-primary {
+            background: var(--primary-gradient);
+            color: var(--text-white);
         }
 
         .badge-secondary {
-            background: rgba(108, 117, 125, 0.1);
-            color: #6c757d;
+            background: var(--secondary-gradient);
+            color: var(--text-white);
         }
+
+        /* Legacy Bootstrap Badge Support */
+        .bg-success { background: var(--success-gradient) !important; color: var(--text-white) !important; }
+        .bg-warning { background: var(--warning-gradient) !important; color: var(--text-white) !important; }
+        .bg-danger { background: var(--danger-gradient) !important; color: var(--text-white) !important; }
+        .bg-info { background: var(--info-gradient) !important; color: var(--text-white) !important; }
+        .bg-primary { background: var(--primary-gradient) !important; color: var(--text-white) !important; }
+        .bg-secondary { background: var(--secondary-gradient) !important; color: var(--text-white) !important; }
+
+        /* Text Color Utilities */
+        .text-primary { color: var(--primary-dark) !important; }
+        .text-secondary { color: var(--text-secondary) !important; }
+        .text-success { color: var(--success-dark) !important; }
+        .text-warning { color: var(--warning-dark) !important; }
+        .text-danger { color: var(--danger-dark) !important; }
+        .text-info { color: var(--info-dark) !important; }
+        .text-muted { color: var(--text-muted) !important; }
+        .text-white { color: var(--text-white) !important; }
+        .text-dark { color: var(--text-dark) !important; }
+
+        /* Legacy Bootstrap Text Support */
+        .text-gray-800 { color: var(--text-primary) !important; }
 
         /* Grid System */
         .grid {
@@ -647,17 +807,6 @@
             }
         }
 
-        /* Dark mode support (optional) */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --text-primary: #f7fafc;
-                --text-secondary: #e2e8f0;
-                --text-muted: #a0aec0;
-                --surface: rgba(45, 55, 72, 0.95);
-                --border-color: rgba(255, 255, 255, 0.1);
-            }
-        }
-
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -670,13 +819,13 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: rgba(102, 126, 234, 0.3);
+            background: rgba(79, 70, 229, 0.3);
             border-radius: 4px;
             transition: var(--transition);
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(102, 126, 234, 0.5);
+            background: rgba(79, 70, 229, 0.5);
         }
     </style>
 </head>
