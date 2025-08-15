@@ -26,10 +26,10 @@
             <div class="d-flex justify-content-between align-items-start mb-3">
                 <div>
                     <p class="mb-1" style="opacity: 0.9; font-size: 0.9rem; font-weight: 500;">Total Revenue</p>
-                    <h3 class="mb-0" style="font-size: 2.2rem; font-weight: 700;">₦<?= number_format($totalRevenue ?? 0, 2) ?></h3>
+                    <h3 class="mb-0" style="font-size: 2.2rem; font-weight: 700;"><?= number_format($totalRevenue ?? 0, 0) ?> UGX</h3>
                 </div>
                 <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 12px;">
-                    <i class="fas fa-dollar-sign" style="font-size: 1.5rem;"></i>
+                    <i class="fas fa-money-bill-wave" style="font-size: 1.5rem;"></i>
                 </div>
             </div>
         </div>

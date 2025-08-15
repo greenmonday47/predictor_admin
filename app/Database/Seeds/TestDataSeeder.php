@@ -95,7 +95,7 @@ class TestDataSeeder extends Seeder
                     'PL002' => ['home_score' => 1, 'away_score' => 1],
                     'PL003' => ['home_score' => 3, 'away_score' => 0]
                 ]),
-                'prize_description' => 'Pts 500,000',
+                'prize_description' => '500,000 UGX',
                 'created_at' => date('Y-m-d H:i:s', strtotime('-14 days'))
             ],
             [
@@ -123,7 +123,7 @@ class TestDataSeeder extends Seeder
                     'CL001' => ['home_score' => 2, 'away_score' => 2],
                     'CL002' => ['home_score' => 1, 'away_score' => 3]
                 ]),
-                'prize_description' => 'Pts 1,000,000',
+                'prize_description' => '1,000,000 UGX',
                 'created_at' => date('Y-m-d H:i:s', strtotime('-10 days'))
             ],
             [
@@ -146,7 +146,7 @@ class TestDataSeeder extends Seeder
                         'match_time' => date('Y-m-d H:i:s', strtotime('+3 days'))
                     ]
                 ]),
-                'prize_description' => 'Pts 300,000',
+                'prize_description' => '300,000 UGX',
                 'created_at' => date('Y-m-d H:i:s', strtotime('-5 days'))
             ]
         ];

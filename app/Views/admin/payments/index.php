@@ -59,7 +59,7 @@
                     <h3 class="mb-0" style="font-size: 2.2rem; font-weight: 700;"><?= number_format($successfulPayments ?? 0) ?></h3>
                 </div>
                 <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 12px;">
-                    <i class="fas fa-dollar-sign" style="font-size: 1.5rem;"></i>
+                    <i class="fas fa-money-bill-wave" style="font-size: 1.5rem;"></i>
                 </div>
             </div>
         </div>
@@ -133,10 +133,10 @@
                         </td>
                         <td>
                             <strong><?= esc($payment['title'] ?? 'Unknown Stack') ?></strong>
-                            <br><small class="text-muted">Entry: ₦<?= number_format($payment['entry_fee'] ?? 0, 2) ?></small>
+                            <br><small class="text-muted">Entry: <?= number_format($payment['entry_fee'] ?? 0, 0) ?> UGX</small>
                         </td>
                         <td>
-                            <span class="badge badge-primary">₦<?= number_format($payment['amount'], 2) ?></span>
+                            <span class="badge badge-primary"><?= number_format($payment['amount'], 0) ?> UGX</span>
                         </td>
                         <td>
                             <?php
@@ -266,7 +266,7 @@ function viewPayment(paymentId) {
                                 </tr>
                                 <tr>
                                     <td><strong>Amount:</strong></td>
-                                    <td><span class="badge badge-primary">₦${Number(payment.amount).toLocaleString()}</span></td>
+                                    <td><span class="badge badge-primary">${Number(payment.amount).toLocaleString()} UGX</span></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Status:</strong></td>

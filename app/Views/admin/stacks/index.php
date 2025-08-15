@@ -152,7 +152,7 @@
                     </td>
                     <td>
                         <span class="badge badge-success" style="font-size: 0.9rem; padding: 8px 12px;">
-                            $<?= number_format($stack['entry_fee'], 2) ?>
+                            <?= number_format($stack['entry_fee'], 0) ?> UGX
                         </span>
                     </td>
                     <td>
@@ -475,7 +475,7 @@ function viewStack(stackId) {
                                     </div>
                                     <div class="d-flex justify-content-between">
                                         <span style="font-weight: 600; color: var(--text-secondary);">Entry Fee:</span>
-                                        <span class="badge badge-success">$${parseFloat(stack.entry_fee).toFixed(2)}</span>
+                                        <span class="badge badge-success">${parseFloat(stack.entry_fee).toLocaleString()} UGX</span>
                                     </div>
                                     <div class="d-flex justify-content-between">
                                         <span style="font-weight: 600; color: var(--text-secondary);">Deadline:</span>

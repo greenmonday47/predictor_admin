@@ -225,7 +225,7 @@ class WalletController extends ResourceController
             
             // Check if user has sufficient balance
             if (!$this->walletModel->hasSufficientBalance($userId, $entryFee)) {
-                return $this->failValidationErrors(['balance' => 'Insufficient wallet balance. Required: Pts ' . number_format($entryFee, 0, '.', ',')]);
+                return $this->failValidationErrors(['balance' => 'Insufficient wallet balance. Required: ' . number_format($entryFee, 0, '.', ',') . ' UGX']);
             }
 
             // Note: Users can participate multiple times in the same stack to increase their chances of winning

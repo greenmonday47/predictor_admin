@@ -136,10 +136,10 @@
                         </div>
                     </td>
                     <td>
-                        <span class="badge badge-success"><?= number_format($winner['score'] ?? 0) ?> pts</span>
+                        <span class="badge badge-success"><?= number_format($winner['score'] ?? 0) ?> points</span>
                     </td>
                     <td>
-                        <span class="badge badge-primary">₦<?= number_format($winner['prize_amount'] ?? 0, 2) ?></span>
+                        <span class="badge badge-primary"><?= number_format($winner['prize_amount'] ?? 0, 0) ?> UGX</span>
                     </td>
                     <td>
                         <small class="text-muted">
@@ -207,11 +207,11 @@ function viewWinner(winnerId) {
                                 </tr>
                                 <tr>
                                     <td><strong>Score:</strong></td>
-                                    <td><span class="badge badge-success">${Number(winner.score || 0).toLocaleString()} pts</span></td>
+                                    <td><span class="badge badge-success">${Number(winner.score || 0).toLocaleString()} points</span></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Prize Amount:</strong></td>
-                                    <td><span class="badge badge-primary">₦${Number(winner.prize_amount || 0).toLocaleString()}</span></td>
+                                    <td><span class="badge badge-primary">${Number(winner.prize_amount || 0).toLocaleString()} UGX</span></td>
                                 </tr>
                             </table>
                         </div>
