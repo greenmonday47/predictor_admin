@@ -180,6 +180,7 @@
                                 <li>This prevents users from making predictions after they know the actual results</li>
                                 <li>Once locked, no new predictions can be submitted for this stack</li>
                                 <li>This is a security measure to ensure fair play</li>
+                                <li><strong>Note:</strong> You can still update additional scores even after the stack is locked</li>
                             </ul>
                         </div>
 

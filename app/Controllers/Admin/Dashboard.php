@@ -237,7 +237,8 @@ class Dashboard extends BaseController
             'entry_fee' => $entryFee,
             'matches_json' => json_encode($matchesData),
             'deadline' => $deadline,
-            'is_active' => $isActive
+            'is_active' => $isActive,
+            'status' => $stack['status'] ?? 'active' // Preserve existing status
         ];
 
         try {

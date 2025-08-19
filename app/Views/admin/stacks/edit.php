@@ -107,39 +107,7 @@
                     </button>
                 </div>
 
-                <hr>
 
-                <div class="mb-3">
-                    <h6 class="font-weight-bold">Actual Scores (Optional)</h6>
-                    <p class="text-muted">Set the actual scores for matches that have been played. This will be used to calculate user scores.</p>
-                    
-                    <div id="actualScoresContainer">
-                        <?php 
-                        $actualScores = json_decode($stack['actual_scores_json'], true) ?: [];
-                        foreach ($matches as $index => $match): 
-                            $matchId = $index + 1;
-                            $actualScore = $actualScores[$match['match_id']] ?? '';
-                        ?>
-                        <div class="score-row row mb-3" data-match-id="<?= $matchId ?>">
-                            <div class="col-md-4">
-                                <label class="form-label"><?= esc($match['home_team']) ?> vs <?= esc($match['away_team']) ?></label>
-                            </div>
-                            <div class="col-md-4">
-                                <input type="text" class="form-control" name="actual_scores[<?= $match['match_id'] ?>]" 
-                                       value="<?= esc($actualScore) ?>" placeholder="e.g., 2-1">
-                                <small class="text-muted">Format: HomeScore-AwayScore (e.g., 2-1)</small>
-                            </div>
-                            <div class="col-md-4">
-                                <small class="text-muted">
-                                    Match Time: <?= date('M j, Y g:i A', strtotime($match['match_time'])) ?>
-                                </small>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-
-                <hr>
 
                 <div class="d-flex justify-content-between">
                     <a href="<?= base_url('admin/stacks') ?>" class="btn btn-secondary">
@@ -228,14 +196,14 @@ $(document).ready(function() {
 </script>
 
 <style>
-.match-row, .score-row {
+.match-row {
     background-color: #f8f9fa;
     padding: 15px;
     border-radius: 5px;
     border: 1px solid #dee2e6;
 }
 
-.match-row:hover, .score-row:hover {
+.match-row:hover {
     background-color: #e9ecef;
 }
 </style>

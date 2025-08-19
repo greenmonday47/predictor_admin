@@ -249,11 +249,11 @@
                             
                             <?php 
                             $hasActualScores = !empty($stack['actual_scores_json']);
-                            $isActive = $stack['status'] === 'active';
+                            $isActive = $stack['is_active'] == 1;
                             ?>
                             
                             <!-- Score Management Actions -->
-                            <?php if ($isActive): ?>
+                            <?php if ($isActive || $hasActualScores): ?>
                                 <button type="button" class="btn btn-sm btn-primary" 
                                         onclick="updateScores(<?= $stack['id'] ?>)"
                                         title="Update Match Scores">
@@ -261,7 +261,7 @@
                                 </button>
                             <?php endif; ?>
                             
-                            <?php if ($hasActualScores && $isActive): ?>
+                            <?php if ($hasActualScores): ?>
                                 <button type="button" class="btn btn-sm btn-success" 
                                         onclick="calculateScores(<?= $stack['id'] ?>)"
                                         title="Calculate User Scores">
@@ -270,7 +270,7 @@
                             <?php endif; ?>
                             
                             <!-- Stack Management Actions -->
-                            <?php if ($hasActualScores && $isActive): ?>
+                            <?php if ($hasActualScores): ?>
                                 <button type="button" class="btn btn-sm btn-warning" 
                                         onclick="resetStack(<?= $stack['id'] ?>)"
                                         title="Reset Stack">
@@ -285,7 +285,7 @@
                             <?php endif; ?>
                             
                             <!-- Winner Actions -->
-                            <?php if ($stack['status'] === 'won'): ?>
+                            <?php if (($stack['status'] ?? '') === 'won'): ?>
                                 <button type="button" class="btn btn-sm btn-success" 
                                         onclick="awardWinners(<?= $stack['id'] ?>)"
                                         title="Award Winners">
@@ -294,7 +294,7 @@
                             <?php endif; ?>
                             
                             <!-- Danger Actions -->
-                            <?php if ($isActive): ?>
+                            <?php if ($isActive || $hasActualScores): ?>
                                 <button type="button" class="btn btn-sm btn-danger" 
                                         onclick="deleteStack(<?= $stack['id'] ?>)"
                                         title="Delete Stack">
