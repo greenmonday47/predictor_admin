@@ -429,13 +429,22 @@ class ScoreController extends BaseController
                 return $this->failNotFound('No predictions found for this user and stack');
             }
 
-            // Get actual scores for this stack
+            // Get actual scores and matches for this stack
             $stack = $this->stackModel->find($stackId);
             if (!$stack || !$stack['actual_scores_json']) {
                 return $this->failNotFound('Actual scores not available for this stack');
             }
 
             $actualScores = json_decode($stack['actual_scores_json'], true);
+            $matches = json_decode($stack['matches_json'], true);
+            
+            // Create a map of match_id to match details for quick lookup
+            $matchDetails = [];
+            if ($matches) {
+                foreach ($matches as $match) {
+                    $matchDetails[$match['match_id']] = $match;
+                }
+            }
             
             // Process ALL predictions and accumulate detailed scoring
             $allDetailedScores = [];
@@ -463,8 +472,15 @@ class ScoreController extends BaseController
                         }
                     }
 
+                    // Get match details including team names
+                    $matchDetail = $matchDetails[$matchId] ?? null;
+                    $homeTeam = $matchDetail ? $matchDetail['home_team'] : 'Unknown Team';
+                    $awayTeam = $matchDetail ? $matchDetail['away_team'] : 'Unknown Team';
+                    
                     $matchScore = [
                         'match_id' => $matchId,
+                        'home_team' => $homeTeam,
+                        'away_team' => $awayTeam,
                         'prediction_number' => $predictionCount,
                         'predicted_score' => $predictedHome . '-' . $predictedAway,
                         'actual_score' => $actualScore ? $actualScore['home_score'] . '-' . $actualScore['away_score'] : 'Not available',
