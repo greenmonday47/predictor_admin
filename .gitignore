@@ -31,7 +31,7 @@ ehthumbs.db
 Thumbs.db
 
 # Flutter app folder
-predictor_app/
+score_predictor/
 
 # Test files
 test_*.php
