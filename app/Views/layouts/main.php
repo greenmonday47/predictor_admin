@@ -913,16 +913,16 @@
                 }, 5000);
             });
 
-            // Add loading state to buttons when clicked
-            const buttons = document.querySelectorAll('.btn[type="submit"], .btn[data-loading]');
+            // Add loading state to buttons when clicked (but not for form submit buttons)
+            const buttons = document.querySelectorAll('.btn[data-loading]');
             buttons.forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function(e) {
                     if (!this.classList.contains('btn-danger')) { // Don't add loading to delete buttons
                         const originalText = this.innerHTML;
                         this.innerHTML = '<span class="loading"></span> Loading...';
                         this.disabled = true;
                         
-                        // Re-enable button after 3 seconds (fallback)
+                        // Re-enable after 3 seconds (fallback)
                         setTimeout(() => {
                             this.innerHTML = originalText;
                             this.disabled = false;

@@ -120,19 +120,27 @@ class StackModel extends Model
      */
     public function updateMatchScore($id, $matchId, $homeScore, $awayScore)
     {
+        log_message('info', "updateMatchScore called: stack={$id}, match={$matchId}, home={$homeScore}, away={$awayScore}");
+        
         $stack = $this->find($id);
         if (!$stack) {
+            log_message('error', "Stack not found in updateMatchScore: {$id}");
             return false;
         }
+
+        log_message('info', "Found stack: " . $stack['title']);
 
         // Get current actual scores
         $actualScores = $stack['actual_scores_json'] ? 
             json_decode($stack['actual_scores_json'], true) : [];
+        
+        log_message('info', "Current actual scores: " . json_encode($actualScores));
 
         // Find and update the specific match score
         $scoreUpdated = false;
         foreach ($actualScores as &$score) {
             if ($score['match_id'] === $matchId) {
+                log_message('info', "Updating existing score for match {$matchId}");
                 $score['home_score'] = $homeScore;
                 $score['away_score'] = $awayScore;
                 $score['updated_at'] = date('Y-m-d H:i:s');
@@ -143,6 +151,7 @@ class StackModel extends Model
 
         // If match not found, add it
         if (!$scoreUpdated) {
+            log_message('info', "Adding new score for match {$matchId}");
             $actualScores[] = [
                 'match_id' => $matchId,
                 'home_score' => $homeScore,
@@ -151,6 +160,8 @@ class StackModel extends Model
             ];
         }
 
+        log_message('info', "Updated actual scores: " . json_encode($actualScores));
+
         // SECURITY: Automatically lock the stack when any score is updated
         // This prevents users from making predictions after they know the results
         $updateData = [
@@ -158,13 +169,17 @@ class StackModel extends Model
             'is_active' => false // Lock the stack immediately
         ];
 
+        log_message('info', "Updating stack with data: " . json_encode($updateData));
+
         // Use direct database update to avoid escape array issues
         $result = $this->db->table($this->table)
                           ->where('id', $id)
                           ->update($updateData);
 
         if ($result) {
-            log_message('info', "Stack {$id} automatically locked after score update for match {$matchId}");
+            log_message('info', "Successfully updated stack {$id} with new scores");
+        } else {
+            log_message('error', "Failed to update stack {$id} with new scores");
         }
 
         return $result;

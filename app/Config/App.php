@@ -16,7 +16,7 @@ class App extends BaseConfig
      *
      * E.g., http://example.com/
      */
-    // public string $baseURL = 'http://localhost:8080/'; //Local Dev
+    // public string $baseURL = 'http://localhost:8080/public/'; //Local Dev
     // public string $baseURL = 'https://legal-pleasant-prawn.ngrok-free.app/predictor/public/'; //Dev
     public string $baseURL = 'https://scores.binusu.site/public/'; //Prod
 

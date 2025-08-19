@@ -402,42 +402,112 @@ class Dashboard extends BaseController
 
     public function processScoreUpdate($id)
     {
+        // Log the request
+        log_message('info', "processScoreUpdate called for stack ID: {$id}");
+        log_message('info', "Request method: " . $this->request->getMethod());
+        log_message('info', "Request URI: " . $this->request->getUri()->getPath());
+        
+        // Get the stack
         $stack = $this->stackModel->find($id);
         
         if (!$stack) {
+            log_message('error', "Stack not found for ID: {$id}");
             return redirect()->to('/admin/stacks')->with('error', 'Stack not found');
         }
+        
+        log_message('info', "Found stack: " . $stack['title']);
 
+        // Get POST data
         $scores = $this->request->getPost('scores');
+        log_message('info', "Raw POST scores data: " . json_encode($scores));
 
+        // Validate scores data
         if (!is_array($scores)) {
-            return redirect()->back()->with('error', 'Invalid scores data');
+            log_message('error', "Invalid scores data type: " . gettype($scores));
+            return redirect()->back()->with('error', 'Invalid scores data format');
+        }
+
+        if (empty($scores)) {
+            log_message('info', "No scores provided, redirecting back");
+            return redirect()->back()->with('error', 'No scores provided');
         }
 
         try {
             $scoresUpdated = false;
+            $updatedMatches = [];
+            
+            log_message('info', "Processing " . count($scores) . " score entries");
             
             foreach ($scores as $matchId => $score) {
-                if (isset($score['home_score']) && isset($score['away_score']) && 
-                    is_numeric($score['home_score']) && is_numeric($score['away_score'])) {
-                    $this->stackModel->updateMatchScore(
+                log_message('info', "Processing match {$matchId}: " . json_encode($score));
+                
+                // Validate score structure
+                if (!is_array($score)) {
+                    log_message('warning', "Invalid score structure for match {$matchId}: " . json_encode($score));
+                    continue;
+                }
+                
+                // Get home and away scores
+                $homeScore = trim($score['home_score'] ?? '');
+                $awayScore = trim($score['away_score'] ?? '');
+                
+                log_message('info', "Match {$matchId} - Home: '{$homeScore}', Away: '{$awayScore}'");
+                
+                // Check if both scores are provided and are valid numbers
+                if ($homeScore !== '' && $awayScore !== '' && 
+                    is_numeric($homeScore) && is_numeric($awayScore)) {
+                    
+                    log_message('info', "Updating match {$matchId} with scores: home={$homeScore}, away={$awayScore}");
+                    
+                    $result = $this->stackModel->updateMatchScore(
                         $id, 
                         $matchId, 
-                        (int) $score['home_score'], 
-                        (int) $score['away_score']
+                        (int) $homeScore, 
+                        (int) $awayScore
                     );
-                    $scoresUpdated = true;
+                    
+                    if ($result) {
+                        $scoresUpdated = true;
+                        $updatedMatches[] = $matchId;
+                        log_message('info', "Successfully updated match {$matchId}");
+                    } else {
+                        log_message('error', "Failed to update match {$matchId}");
+                    }
+                } else {
+                    log_message('info', "Skipping match {$matchId} - scores not both provided or not numeric");
                 }
             }
 
+            log_message('info', "Score update completed. Updated: {$scoresUpdated}, Matches: " . json_encode($updatedMatches));
+
             // Automatically calculate user scores if any scores were updated
             if ($scoresUpdated) {
-                $this->calculateUserScores($id);
-                return redirect()->to('/admin/stacks')->with('success', 'Scores updated, stack automatically locked, and user scores calculated successfully');
+                log_message('info', "Calculating user scores for stack {$id}");
+                $calculationResult = $this->calculateUserScores($id);
+                
+                if ($calculationResult !== false) {
+                    log_message('info', "User scores calculated successfully for {$calculationResult} predictions");
+                    return redirect()->to('/admin/stacks')->with('success', 
+                        "Scores updated successfully for " . count($updatedMatches) . " matches. " .
+                        "Stack automatically locked for security. " .
+                        "User scores calculated for {$calculationResult} predictions."
+                    );
+                } else {
+                    log_message('warning', "User score calculation failed for stack {$id}");
+                    return redirect()->to('/admin/stacks')->with('success', 
+                        "Scores updated successfully for " . count($updatedMatches) . " matches. " .
+                        "Stack automatically locked for security. " .
+                        "User score calculation failed."
+                    );
+                }
+            } else {
+                log_message('info', "No scores were updated");
+                return redirect()->back()->with('error', 'No valid scores were provided for update');
             }
 
-            return redirect()->to('/admin/stacks')->with('success', 'Scores updated and stack automatically locked for security');
         } catch (\Exception $e) {
+            log_message('error', "Exception in processScoreUpdate: " . $e->getMessage());
+            log_message('error', "Stack trace: " . $e->getTraceAsString());
             return redirect()->back()->with('error', 'Failed to update scores: ' . $e->getMessage());
         }
     }
